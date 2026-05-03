@@ -1,0 +1,29 @@
+# Model files
+*.h5
+*.keras
+cnn_image_classifier_savedmodel/
+
+# Dataset
+*.zip
+PetImages/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Images
+*.png
+*.jpg
+*.jpeg
+
+# OS
+.DS_Store
+Thumbs.db

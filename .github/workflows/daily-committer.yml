@@ -1,0 +1,58 @@
+name: Daily Committer
+
+on:
+  schedule:
+    # Runs at 14:00 UTC (around evening in IST) every day
+    - cron: '0 14 * * *'
+  workflow_dispatch: # Allows you to run it manually via a button just in case
+
+jobs:
+  commit-files:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to push commits
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Move and Commit 3 Files
+        run: |
+          # Check if the folder exists
+          if [ ! -d "Scheduled_Uploads" ]; then
+            echo "Scheduled_Uploads directory not found! All files migrated."
+            exit 0
+          fi
+
+          # Find all files in Scheduled_Uploads
+          FILES=$(find Scheduled_Uploads -type f | head -n 3)
+          
+          if [ -z "$FILES" ]; then
+            echo "No more files left to process!"
+            exit 0
+          fi
+
+          for FILE in $FILES; do
+            # Extract the actual project path by removing "Scheduled_Uploads/"
+            TARGET_PATH="${FILE#Scheduled_Uploads/}"
+            TARGET_DIR=$(dirname "$TARGET_PATH")
+            
+            # Create target directory
+            mkdir -p "$TARGET_DIR"
+            
+            # Use git mv to move the file (handles deletion of old and addition of new)
+            git mv "$FILE" "$TARGET_PATH"
+            
+            # Commit the change
+            git commit -m "feat: added $TARGET_PATH"
+          done
+          
+          # Push the 3 new commits back to the repo
+          git push

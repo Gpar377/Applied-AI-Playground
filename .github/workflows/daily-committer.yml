@@ -21,7 +21,7 @@ jobs:
       - name: Configure Git
         run: |
           git config --global user.name 'Gpar377'
-          git config --global user.email 'gpar377@gmail.com'
+          git config --global user.email 'gopaparthiv@gmail.com'
 
       - name: Move and Commit 3 Files
         run: |
